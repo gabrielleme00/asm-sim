@@ -45,6 +45,35 @@ export class CPU {
         let val, src, dst, aux;
 
         switch (instr) {
+            case codes.MOV_REG_TO_REG:
+                aux = this.readMem(++this.ip);
+                dst = this.readReg(utils.leftBits(aux));
+                src = this.readReg(utils.rightBits(aux));
+                this.writeReg(dst, src);
+                this.ip++;
+                break;
+            
+            case MOV_ADDRESS_TO_REG:
+                break;
+                
+            case MOV_REGADDRESS_TO_REG:
+                    break;
+            
+            case MOV_REG_TO_ADDRESS:
+                    break;
+                    
+            case MOV_REG_TO_REGADDRESS:
+                    break;
+                    
+            case MOV_NUMBER_TO_REG:
+                    break;
+                    
+            case MOV_NUMBER_TO_ADDRESS:
+                    break;
+                    
+            case MOV_NUMBER_TO_REGADDRESS:
+                    break;
+
             case codes.ADD_REG_TO_REG:
                 aux = this.readMem(++this.ip);
                 dst = this.readReg(utils.leftBits(aux));
