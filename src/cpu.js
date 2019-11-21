@@ -53,25 +53,25 @@ export class CPU {
                 this.ip++;
                 break;
             
-            case MOV_ADDRESS_TO_REG:
+            case codes.MOV_ADDRESS_TO_REG:
                 break;
                 
-            case MOV_REGADDRESS_TO_REG:
+            case codes.MOV_REGADDRESS_TO_REG:
                     break;
             
-            case MOV_REG_TO_ADDRESS:
+            case codes.MOV_REG_TO_ADDRESS:
                     break;
                     
-            case MOV_REG_TO_REGADDRESS:
+            case codes.MOV_REG_TO_REGADDRESS:
                     break;
                     
-            case MOV_NUMBER_TO_REG:
+            case codes.MOV_NUMBER_TO_REG:
                     break;
                     
-            case MOV_NUMBER_TO_ADDRESS:
+            case codes.MOV_NUMBER_TO_ADDRESS:
                     break;
                     
-            case MOV_NUMBER_TO_REGADDRESS:
+            case codes.MOV_NUMBER_TO_REGADDRESS:
                     break;
 
             case codes.ADD_REG_TO_REG:
