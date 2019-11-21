@@ -34,7 +34,7 @@ export class RAM {
         return this.memory[addr];
     }
 
-    // Returns true if the register exists
+    // Returns true if the address exists
     addressExists(addr) {
         return !(addr < 0 || addr >= this.memory.length);
     }
