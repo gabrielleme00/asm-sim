@@ -1,7 +1,7 @@
 # Simple 8-bit Computer Simulator
 A simple computer simulator made for fun and study purposes.
 
-##TODO:
+## TODO:
 - Add a clock
 - Add more opcodes
 - Map memory to output
