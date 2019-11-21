@@ -11,14 +11,14 @@
 export const Opcodes = {
     NONE: 0,
     // MOV
-    MOV_REG_TO_REG: 1,
-    MOV_ADDRESS_TO_REG: 2,
-    MOV_REGADDRESS_TO_REG: 3,
-    MOV_REG_TO_ADDRESS: 4,
-    MOV_REG_TO_REGADDRESS: 5,
-    MOV_NUMBER_TO_REG: 6,
-    MOV_NUMBER_TO_ADDRESS: 7,
-    MOV_NUMBER_TO_REGADDRESS: 8,
+    MOV_REG_TO_REG: 1,              // Needs next 1 byte
+    MOV_ADDRESS_TO_REG: 2,          // Needs next 2 bytes
+    MOV_REGADDRESS_TO_REG: 3,       // Needs next 1 byte
+    MOV_REG_TO_ADDRESS: 4,          // Needs next 2 bytes
+    MOV_REG_TO_REGADDRESS: 5,       // Needs next 1 byte
+    MOV_NUMBER_TO_REG: 6,           // Needs next 2 bytes
+    MOV_NUMBER_TO_ADDRESS: 7,       // Needs next 2 bytes
+    MOV_NUMBER_TO_REGADDRESS: 8,    // Needs next 2 bytes
     // ADD
     ADD_REG_TO_REG: 9,              // Needs next 1 byte
     ADD_REGADDRESS_TO_REG: 10,      // Needs next 1 byte
