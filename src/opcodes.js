@@ -24,4 +24,6 @@ export const Opcodes = {
     ADD_REGADDRESS_TO_REG: 10,      // Needs next 1 byte
     ADD_ADDRESS_TO_REG: 11,         // Needs next 2 bytes
     ADD_NUMBER_TO_REG: 12,          // Needs next 2 bytes
+    // OTHERS
+    HALT: 255
 }

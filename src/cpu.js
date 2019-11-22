@@ -25,10 +25,14 @@ export class CPU {
     }
 
     // Clock tick
-    step() {
+    tick() {
         // Raises an error if the last operation was faulty
         if (this.fault) {
             throw "FAULT";
+        }
+
+        if (this.ip >= this.memory.size) {
+            // TODO: Stop clock
         }
 
         // Get an instruction from memory
@@ -45,6 +49,10 @@ export class CPU {
         let val, src, dst, aux;
 
         switch (instr) {
+            case codes.NONE:
+                this.ip++;
+                break;
+
             case codes.MOV_REG_TO_REG:
                 aux = this.readMem(++this.ip);
                 dst = this.readReg(utils.leftBits(aux));
@@ -57,22 +65,22 @@ export class CPU {
                 break;
                 
             case codes.MOV_REGADDRESS_TO_REG:
-                    break;
+                break;
             
             case codes.MOV_REG_TO_ADDRESS:
-                    break;
+                break;
                     
             case codes.MOV_REG_TO_REGADDRESS:
-                    break;
+                break;
                     
             case codes.MOV_NUMBER_TO_REG:
-                    break;
+                break;
                     
             case codes.MOV_NUMBER_TO_ADDRESS:
-                    break;
+                break;
                     
             case codes.MOV_NUMBER_TO_REGADDRESS:
-                    break;
+                break;
 
             case codes.ADD_REG_TO_REG:
                 aux = this.readMem(++this.ip);
@@ -106,6 +114,9 @@ export class CPU {
                 val = this.processResult(dst + src);
                 this.writeReg(dst, val);
                 this.ip++;
+                break;
+
+            case codes.HALT:
                 break;
 
             default:

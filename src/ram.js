@@ -9,6 +9,10 @@ export class RAM {
         this.memory = new Uint8Array(size);
     }
 
+    get size() {
+        return this.memory.length;
+    }
+
     // Writes a value to a memory location
     set(addr, val) {
         // Handle non-existent memory address

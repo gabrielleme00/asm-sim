@@ -13,6 +13,7 @@
 
 import { RAM } from './ram.js';
 import { CPU } from './cpu.js';
+import { Clock } from './clock.js';
 import { Opcodes as opcodes } from './opcodes.js';
 
 export class Computer {
@@ -23,5 +24,6 @@ export class Computer {
     reset() {
         this.memory = new RAM(256);
         this.cpu = new CPU(this.memory, opcodes);
+        this.clock = new Clock(1 * 1000, this.cpu);
     }
 }
