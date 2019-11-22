@@ -153,7 +153,7 @@ export class CPU {
     readReg(reg) {
         // Handle non-existent register
         if (!this.registerExists(reg)) {
-            throw "Register does not exist: " + addr;
+            throw "Register does not exist: " + reg;
         }
 
         return this.gpr[reg];
