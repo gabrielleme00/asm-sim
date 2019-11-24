@@ -57,8 +57,8 @@ export class CPU {
 
             case codes.MOV_REG_TO_REG:
                 aux = this.readMem(++this.ip);
-                dst = this.readReg(utils.leftBits(aux));
-                src = this.readReg(utils.rightBits(aux));
+                dst = this.readReg(utils.hBits(aux));
+                src = this.readReg(utils.lBits(aux));
                 this.writeReg(dst, src);
                 this.ip++;
                 break;
@@ -102,8 +102,8 @@ export class CPU {
 
             case codes.ADD_REG_TO_REG:
                 aux = this.readMem(++this.ip);
-                dst = this.readReg(utils.leftBits(aux));
-                src = this.readReg(utils.rightBits(aux));
+                dst = this.readReg(utils.hBits(aux));
+                src = this.readReg(utils.lBits(aux));
                 val = this.processResult(dst + src);
                 this.writeReg(dst, val);
                 this.ip++;
