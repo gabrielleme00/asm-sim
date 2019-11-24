@@ -6,9 +6,9 @@ A simple computer simulator made for fun and study purposes.
 - [X] RAM
 - [X] Computer
 - [X] Clock
-- [X] Opcodes list
-    - [ ] Add more opcodes
-- Map memory to output
+- [X] Opcodes list (WIP)
+    - [ ] Add missing opcodes
+- [ ] Map memory to output
 - UI
     - [ ] Code editor
     - [ ] Compile/assemble button
