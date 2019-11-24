@@ -12,10 +12,12 @@ export class CPU {
         this.gpr = new Uint8Array(4);
         // Instruction Pointer
         this.ip = 0;
-        // Zero flag
-        this.zero = 0;
-        // Fault flag
-        this.fault = 0;
+        // Flags
+        this.flags = {
+            carry: false,
+            fault: false,
+            zero: false,
+        }
 
         // RAM reference
         this.memory = memory;
@@ -27,12 +29,12 @@ export class CPU {
     // Clock tick
     tick() {
         // Raises an error if the last operation was faulty
-        if (this.fault) {
+        if (this.flags.fault) {
             throw "FAULT";
         }
 
         if (this.ip >= this.memory.size) {
-            // TODO: Stop clock
+            return false;
         }
 
         // Get an instruction from memory
@@ -49,8 +51,9 @@ export class CPU {
         let val, src, dst, aux;
 
         switch (instr) {
-            case codes.NONE:
-                return false;
+            case codes.NOP:
+                this.ip++
+                break;
 
             case codes.MOV_REG_TO_REG:
                 aux = this.readMem(++this.ip);
@@ -61,21 +64,37 @@ export class CPU {
                 break;
             
             case codes.MOV_ADDRESS_TO_REG:
+                dst = this.readMem(this.readMem(++this.ip));
+                src = this.readMem(++this.ip);
+                this.writeReg(dst, src);
+                this.ip++;
                 break;
                 
             case codes.MOV_REGADDRESS_TO_REG:
                 break;
             
             case codes.MOV_REG_TO_ADDRESS:
+                dst = this.readReg(this.readMem(++this.ip));
+                src = this.readMem(++this.ip);
+                this.writeMem(dst, src);
+                this.ip++;
                 break;
                     
             case codes.MOV_REG_TO_REGADDRESS:
                 break;
                     
             case codes.MOV_NUMBER_TO_REG:
+                dst = this.readMem(++this.ip);
+                src = this.readMem(++this.ip);
+                this.writeReg(dst, src);
+                this.ip++;
                 break;
                     
             case codes.MOV_NUMBER_TO_ADDRESS:
+                dst = this.readMem(++this.ip);
+                src = this.readMem(++this.ip);
+                this.writeMem(dst, src);
+                this.ip++;
                 break;
                     
             case codes.MOV_NUMBER_TO_REGADDRESS:
@@ -91,12 +110,6 @@ export class CPU {
                 break;
 
             case codes.ADD_REGADDRESS_TO_REG:
-                aux = this.readMem(++this.ip);
-                dst = this.readReg(utils.leftBits(aux));
-                src = this.readMem(this.readReg(utils.rightBits(aux)));
-                val = this.processResult(dst + src);
-                this.writeReg(dst, val);
-                this.ip++;
                 break;
 
             case codes.ADD_ADDRESS_TO_REG:
@@ -115,6 +128,9 @@ export class CPU {
                 this.ip++;
                 break;
 
+            case codes.STOP:
+                return false;
+
             default:
                 throw "Invalid opcode: " + instr;
         }
@@ -123,18 +139,18 @@ export class CPU {
     // Raises flags based on an operation value
     processResult(value) {
         // Reset Zero and Carry flags
-        this.zero = this.carry = false;
+        this.flags.zero = this.flags.carry = false;
 
         // Process value
         if (value >= 256) {
-            this.carry = true;
+            this.flags.carry = true;
             value %= 256;
 
         } else if (value === 0) {
-            this.zero = true;
+            this.flags.zero = true;
 
         } else if (value < 0) {
-            this.carry = true;
+            this.flags.carry = true;
             value = 255 - (-value) % 256;
 
         }
@@ -145,7 +161,7 @@ export class CPU {
     // Writes a value to a register
     writeReg(reg, val) {
         if (!this.registerExists(reg)) {
-            throw "Register does not exist: " + addr;
+            throw "Register does not exist: " + reg;
         }
 
         // Handle value too large

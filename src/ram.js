@@ -25,12 +25,19 @@ export class RAM {
             throw "Memory access violation: " + addr;
         }
 
-        // Handle value too large
-        if (val > 0xFF) {
-            val = 0xFF;
+        if (Array.isArray(val)) {
+            for (let i = 0; i < val.length; i++) {
+                // Handle value too large
+                val = val > 0xFF ? 0xFF : val;
+                // Copy value to memory
+                this.memory[addr + i] = val[i];
+            }
+        } else {
+            // Handle value too large
+            val = val > 0xFF ? 0xFF : val;
+            // Copy value to memory
+            this.memory[addr] = val;
         }
-
-        this.memory[addr] = val;
     }
 
     // Reads a value from memory

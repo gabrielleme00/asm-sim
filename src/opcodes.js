@@ -9,7 +9,7 @@
 "use strict";
 
 export const Opcodes = {
-    NONE: 0,
+    NOP: 0,
     // MOV
     MOV_REG_TO_REG: 1,              // Needs next 1 byte
     MOV_ADDRESS_TO_REG: 2,          // Needs next 2 bytes
@@ -25,5 +25,5 @@ export const Opcodes = {
     ADD_ADDRESS_TO_REG: 11,         // Needs next 2 bytes
     ADD_NUMBER_TO_REG: 12,          // Needs next 2 bytes
     // OTHERS
-    HALT: 255
+    STOP: 255
 }

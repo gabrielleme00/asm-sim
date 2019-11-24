@@ -9,7 +9,8 @@ import { Computer } from './computer.js';
 const computer = new Computer();
 
 // TESTING:
-computer.memory.set(0, 2);
-computer.memory.set(1, 0b00100001);
+computer.memory.set(0, [
+    0x06, 0x00, 0x0A, 0xFF
+]);
 computer.start(1);
 console.log(computer);
