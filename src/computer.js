@@ -16,7 +16,7 @@ export class Computer {
     }
 
     reset() {
-        this.memory = new RAM(0xFFFF + 1);
+        this.memory = new RAM(0xFF + 1);
         this.cpu = new CPU(this.memory, opcodes);
         this.clock = new Clock([this.cpu]);
     }
