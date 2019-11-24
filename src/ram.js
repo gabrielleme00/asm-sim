@@ -5,10 +5,15 @@
 "use strict";
 
 export class RAM {
+    /**
+     * 
+     * @param {Number} size Size in bytes
+     */
     constructor(size) {
         this.memory = new Uint8Array(size);
     }
 
+    // Returns memory size in bytes
     get size() {
         return this.memory.length;
     }
@@ -17,7 +22,7 @@ export class RAM {
     set(addr, val) {
         // Handle non-existent memory address
         if (!this.addressExists(addr)) {
-            throw "Address does not exist: " + addr;
+            throw "Memory access violation: " + addr;
         }
 
         // Handle value too large
@@ -32,7 +37,7 @@ export class RAM {
     get(addr) {
         // Handle non-existent memory address
         if (!this.addressExists(addr)) {
-            throw "Address does not exist: " + addr;
+            throw "Memory access violation: " + addr;
         }
 
         return this.memory[addr];

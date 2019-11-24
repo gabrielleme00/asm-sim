@@ -38,7 +38,7 @@ export class CPU {
         // Get an instruction from memory
         const instr = this.memory.get(this.ip);
         // Decode instruction
-        this.decode(instr);
+        return this.decode(instr);
     }
 
     // Decodes/processess a given instruction
@@ -50,8 +50,7 @@ export class CPU {
 
         switch (instr) {
             case codes.NONE:
-                this.ip++;
-                break;
+                return false;
 
             case codes.MOV_REG_TO_REG:
                 aux = this.readMem(++this.ip);
@@ -114,9 +113,6 @@ export class CPU {
                 val = this.processResult(dst + src);
                 this.writeReg(dst, val);
                 this.ip++;
-                break;
-
-            case codes.HALT:
                 break;
 
             default:

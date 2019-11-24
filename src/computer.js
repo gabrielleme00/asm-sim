@@ -24,6 +24,22 @@ export class Computer {
     reset() {
         this.memory = new RAM(256);
         this.cpu = new CPU(this.memory, opcodes);
-        this.clock = new Clock(1 * 1000, this.cpu);
+        this.clock = new Clock([this.cpu]);
+    }
+
+    start(speed) {
+        this.clock.start(speed);
+    }
+
+    step() {
+        try {
+            this.cpu.tick();
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    stop() {
+        this.clock.stop();
     }
 }
