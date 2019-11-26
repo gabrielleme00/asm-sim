@@ -127,6 +127,46 @@ export class CPU {
                 this.writeReg(dst, val);
                 this.ip++;
                 break;
+            
+            case codes.SUB_REG_FROM_REG:
+                aux = this.readMem(++this.ip);
+                dst = this.readReg(utils.hBits(aux));
+                src = this.readReg(utils.lBits(aux));
+                val = this.processResult(dst - src);
+                this.writeReg(dst, val);
+                this.ip++;
+                break;
+                
+            case codes.SUB_REGADDRESS_FROM_REG:
+                break;
+                    
+            case codes.SUB_ADDRESS_FROM_REG:
+                dst = this.readMem(++this.ip);
+                src = this.readMem(this.readMem(++this.ip));
+                val = this.processResult(dst - src);
+                this.writeReg(dst, val);
+                this.ip++;
+                break;
+                    
+            case codes.SUB_NUMBER_FROM_REG:
+                dst = this.readMem(++this.ip);
+                src = this.readMem(++this.ip);
+                val = this.processResult(dst - src);
+                this.writeReg(dst, val);
+                this.ip++;
+                break;
+
+            case codes.INC_REG:
+                dst = this.readMem(++this.ip);
+                this.incReg(dst);
+                this.ip++;
+                break;
+            
+            case codes.DEC_REG:
+                dst = this.readMem(++this.ip);
+                this.decReg(dst);
+                this.ip++;
+                break;
 
             case codes.STOP:
                 return false;
@@ -145,14 +185,11 @@ export class CPU {
         if (value >= 256) {
             this.flags.carry = true;
             value %= 256;
-
         } else if (value === 0) {
             this.flags.zero = true;
-
         } else if (value < 0) {
             this.flags.carry = true;
             value = 255 - (-value) % 256;
-
         }
 
         return value;
@@ -172,7 +209,7 @@ export class CPU {
         this.gpr[reg] = val;
     }
 
-    // Reads register's value
+    // Reads register value
     readReg(reg) {
         // Handle non-existent register
         if (!this.registerExists(reg)) {
@@ -180,6 +217,16 @@ export class CPU {
         }
 
         return this.gpr[reg];
+    }
+
+    // Increases register value by 1
+    incReg(reg) {
+        this.writeReg(reg, this.readReg(reg) + 1);
+    }
+
+    // Decreases register value by 1
+    decReg(reg) {
+        this.writeReg(reg, this.readReg(reg) - 1);
     }
 
     // Writes a value to a memory location

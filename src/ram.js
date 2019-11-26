@@ -6,7 +6,7 @@
 
 export class RAM {
     /**
-     * 
+     * Creates a memory of a specified size
      * @param {Number} size Size in bytes
      */
     constructor(size) {

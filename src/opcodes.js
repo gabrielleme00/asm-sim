@@ -28,7 +28,14 @@ export const Opcodes = {
     ADD_NUMBER_TO_REG: 12,          // Needs next 2 bytes
     
     // SUB
+    SUB_REG_FROM_REG: 14,           // Needs next 1 byte
+    SUB_REGADDRESS_FROM_REG: 15,    // Needs next 1 byte
+    SUB_ADDRESS_FROM_REG: 16,       // Needs next 2 bytes
+    SUB_NUMBER_FROM_REG: 17,        // Needs next 2 bytes
+
     // INC, DEC
+    INC_REG: 18,                    // Needs next 1 byte
+    DEC_REG: 19                     // Needs next 1 byte
     // CMP
     // JMP, JC, JNC, JZ, JNZ, JA, JNA
     // PUSH, POP
