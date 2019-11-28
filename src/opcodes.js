@@ -35,8 +35,14 @@ export const Opcodes = {
 
     // INC, DEC
     INC_REG: 18,                    // Needs next 1 byte
-    DEC_REG: 19,                     // Needs next 1 byte
+    DEC_REG: 19,                    // Needs next 1 byte
+    
     // CMP
+    CMP_REG_WITH_REG: 20,
+    CMP_REGADDRESS_WITH_REG: 21,
+    CMP_ADDRESS_WITH_REG: 22,
+    CMP_NUMBER_WITH_REG: 23,
+    
     // JMP, JC, JNC, JZ, JNZ, JA, JNA
     // PUSH, POP
     // CALL, RET
