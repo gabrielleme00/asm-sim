@@ -44,6 +44,9 @@ export const Opcodes = {
     CMP_NUMBER_WITH_REG: 23,        // Needs next 2 bytes
     
     // JMP, JC, JNC, JZ, JNZ, JA, JNA
+    JMP_REGADDRESS: 24,             // Needs next 1 byte
+    JMP_ADDRESS: 25,                // Needs next 1 byte
+
     // PUSH, POP
     // CALL, RET
     // MUL, DIV

@@ -9,7 +9,7 @@ import * as utils from './utils.js';
 export class CPU {
     /**
      * Creates a CPU and links it to a memory and opcode list.
-     * @param {Number} memory Memory size in bytes
+     * @param {RAM} memory Memory size in bytes
      * @param {Object} opcodes Opcode list object
      */
     constructor(memory, opcodes) {
@@ -84,7 +84,7 @@ export class CPU {
             case codes.MOV_REGADDRESS_TO_REG:
                 aux = this.readMem(++this.ip);
                 dst = utils.hBits(aux);
-                src = this.readRegAddress(utils.lBits(aux));
+                src = this.readRegAddr(utils.lBits(aux));
                 this.writeReg(dst, src);
                 this.ip++;
                 break;
@@ -138,7 +138,7 @@ export class CPU {
             case codes.ADD_REGADDRESS_TO_REG:
                 aux = this.readMem(++this.ip);
                 dst = utils.hBits(aux);
-                src = this.readRegAddress(utils.lBits(aux));
+                src = this.readRegAddr(utils.lBits(aux));
                 val = this.processResult(this.readReg(dst) + src);
                 this.writeReg(dst, val);
                 this.ip++;
@@ -173,7 +173,7 @@ export class CPU {
             case codes.SUB_REGADDRESS_FROM_REG:
                 aux = this.readMem(++this.ip);
                 dst = utils.hBits(aux);
-                src = this.readRegAddress(utils.lBits(aux));
+                src = this.readRegAddr(utils.lBits(aux));
                 val = this.processResult(this.readReg(dst) - src);
                 this.writeReg(dst, val);
                 this.ip++;
@@ -220,7 +220,7 @@ export class CPU {
             case codes.CMP_REGADDRESS_WITH_REG:
                 aux = this.readMem(++this.ip);
                 dst = this.readReg(utils.hBits(aux));
-                src = this.readRegAddress(utils.lBits(aux));
+                src = this.readRegAddr(utils.lBits(aux));
                 this.processResult(dst - src);
                 this.ip++;
                 break;
@@ -237,6 +237,17 @@ export class CPU {
                 src = this.readMem(++this.ip);
                 this.processResult(dst - src);
                 this.ip++;
+                break;
+
+            // JMP
+            case codes.JMP_REGADDRESS:
+                aux = this.readRegAddr(this.readMem(++this.ip));
+                this.jump(aux);
+                break;
+
+            case codes.JMP_ADDRESS:
+                aux = this.readMem(this.readMem(++this.ip));
+                this.jump(aux);
                 break;
 
             case codes.STOP:
@@ -322,7 +333,7 @@ export class CPU {
      * Returns a memory value from the value of a register.
      * @param {Number} reg GP Register index (0-3)
      */
-    readRegAddress(reg) {
+    readRegAddr(reg) {
         // Handle non-existent register.
         if (!this.registerExists(reg)) {
             throw "Register does not exist: " + reg;
@@ -388,5 +399,18 @@ export class CPU {
      */
     registerExists(reg) {
         return !(reg < 0 || reg >= this.gpr.length);
+    }
+
+    /**
+     * Sets the instruction pointer (IP) to the specified address.
+     * If the address does not exist, throws an error.
+     * @param {Number} addr Address (0-255)
+     */
+    jump(addr) {
+        if (!this.memory.addressExists(addr)) {
+            throw "IP memory address is out of bounds";
+        }
+
+        this.ip = addr;
     }
 }
