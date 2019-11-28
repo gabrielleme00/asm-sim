@@ -7,6 +7,11 @@
 import * as utils from './utils.js';
 
 export class CPU {
+    /**
+     * Creates a CPU and links it to a memory and opcode list.
+     * @param {Number} memory Memory size in bytes
+     * @param {Object} opcodes Opcode list object
+     */
     constructor(memory, opcodes) {
         // General Purpose Registers
         this.gpr = new Uint8Array(4);
@@ -26,9 +31,11 @@ export class CPU {
         this.opcodes = opcodes;
     }
 
-    // Clock tick
+    /**
+     * Clock tick
+     */
     tick() {
-        // Raises an error if the last operation was faulty
+        // Raises an error if the last operation was faulty.
         if (this.flags.fault) {
             throw "FAULT";
         }
@@ -37,13 +44,16 @@ export class CPU {
             return false;
         }
 
-        // Get an instruction from memory
+        // Get an instruction from memory.
         const instr = this.memory.get(this.ip);
         // Decode instruction
         return this.decode(instr);
     }
 
-    // Decodes/processess a given instruction
+    /**
+     * Decodes/processess a given instruction.
+     * @param {Number} instr Instruction opcode
+     */
     decode(instr) {
         // Opcodes list
         const codes = this.opcodes;
@@ -64,13 +74,18 @@ export class CPU {
                 break;
             
             case codes.MOV_ADDRESS_TO_REG:
-                dst = this.readMem(this.readMem(++this.ip));
+                dst = this.readPointer(++this.ip);
                 src = this.readMem(++this.ip);
                 this.writeReg(dst, src);
                 this.ip++;
                 break;
                 
             case codes.MOV_REGADDRESS_TO_REG:
+                aux = this.readMem(++this.ip);
+                dst = utils.hBits(aux);
+                src = this.readRegAddress(utils.lBits(aux));
+                this.writeReg(dst, src);
+                this.ip++;
                 break;
             
             case codes.MOV_REG_TO_ADDRESS:
@@ -81,6 +96,11 @@ export class CPU {
                 break;
                     
             case codes.MOV_REG_TO_REGADDRESS:
+                aux = this.readMem(++this.ip);
+                dst = this.readReg(utils.hBits(aux));
+                src = this.readReg(utils.lBits(aux));
+                this.writeRegAddress(dst, src);
+                this.ip++
                 break;
                     
             case codes.MOV_NUMBER_TO_REG:
@@ -98,6 +118,10 @@ export class CPU {
                 break;
                     
             case codes.MOV_NUMBER_TO_REGADDRESS:
+                dst = this.readMem(++this.ip);
+                src = this.readMem(++this.ip);
+                this.writeRegAddress(dst, src);
+                this.ip++;
                 break;
 
             case codes.ADD_REG_TO_REG:
@@ -110,11 +134,17 @@ export class CPU {
                 break;
 
             case codes.ADD_REGADDRESS_TO_REG:
+                aux = this.readMem(++this.ip);
+                dst = utils.hBits(aux);
+                src = this.readRegAddress(utils.lBits(aux));
+                val = this.processResult(this.readReg(dst) + src);
+                this.writeReg(dst, val);
+                this.ip++;
                 break;
 
             case codes.ADD_ADDRESS_TO_REG:
                 dst = this.readMem(++this.ip);
-                src = this.readMem(this.readMem(++this.ip));
+                src = this.readPointer(++this.ip);
                 val = this.processResult(dst + src);
                 this.writeReg(dst, val);
                 this.ip++;
@@ -138,11 +168,17 @@ export class CPU {
                 break;
                 
             case codes.SUB_REGADDRESS_FROM_REG:
+                aux = this.readMem(++this.ip);
+                dst = utils.hBits(aux);
+                src = this.readRegAddress(utils.lBits(aux));
+                val = this.processResult(this.readReg(dst) - src);
+                this.writeReg(dst, val);
+                this.ip++;
                 break;
                     
             case codes.SUB_ADDRESS_FROM_REG:
                 dst = this.readMem(++this.ip);
-                src = this.readMem(this.readMem(++this.ip));
+                src = this.readPointer(++this.ip);
                 val = this.processResult(dst - src);
                 this.writeReg(dst, val);
                 this.ip++;
@@ -176,26 +212,33 @@ export class CPU {
         }
     }
 
-    // Raises flags based on an operation value
-    processResult(value) {
+    /**
+     * Raises flags based on an operation result.
+     * @param {Number} result Any operation result
+     */
+    processResult(result) {
         // Reset Zero and Carry flags
         this.flags.zero = this.flags.carry = false;
 
-        // Process value
-        if (value >= 256) {
+        // Process result
+        if (result >= 256) {
             this.flags.carry = true;
-            value %= 256;
-        } else if (value === 0) {
+            result %= 256;
+        } else if (result === 0) {
             this.flags.zero = true;
-        } else if (value < 0) {
+        } else if (result < 0) {
             this.flags.carry = true;
-            value = 255 - (-value) % 256;
+            result = 255 - (-result) % 256;
         }
 
-        return value;
+        return result;
     }
 
-    // Writes a value to a register
+    /**
+     * Writes a value to a register.
+     * @param {Number} reg GP Register (0-3)
+     * @param {Number} val Value (0-255)
+     */
     writeReg(reg, val) {
         if (!this.registerExists(reg)) {
             throw "Register does not exist: " + reg;
@@ -209,9 +252,12 @@ export class CPU {
         this.gpr[reg] = val;
     }
 
-    // Reads register value
+    /**
+     * Returns the value of a register.
+     * @param {Number} reg GP Register index (0-3)
+     */
     readReg(reg) {
-        // Handle non-existent register
+        // Handle non-existent register.
         if (!this.registerExists(reg)) {
             throw "Register does not exist: " + reg;
         }
@@ -219,27 +265,92 @@ export class CPU {
         return this.gpr[reg];
     }
 
-    // Increases register value by 1
+    /**
+     * Writes to memory from a value stored in a register.
+     * @param {Number} reg GP Register (0-3)
+     * @param {Number} val Value (0-255)
+     */
+    writeRegAddress(reg, val) {
+        if (!this.registerExists(reg)) {
+            throw "Register does not exist: " + reg;
+        }
+
+        // Handle value too large
+        if (val > 0xFF) {
+            val = 0xFF;
+        }
+
+        this.writeMem(this.gpr[reg], val);
+    }
+
+    /**
+     * Returns a memory value from the value of a register.
+     * @param {Number} reg GP Register index (0-3)
+     */
+    readRegAddress(reg) {
+        // Handle non-existent register.
+        if (!this.registerExists(reg)) {
+            throw "Register does not exist: " + reg;
+        }
+
+        return this.readMem(this.gpr[reg]);
+    }
+
+    /**
+     * Increases register value by 1.
+     * @param {Number} reg GP Register index (0-3)
+     */
     incReg(reg) {
         this.writeReg(reg, this.readReg(reg) + 1);
     }
 
-    // Decreases register value by 1
+    /**
+     * Decreases register value by 1.
+     * @param {Number} reg GP Register index (0-3)
+     */
     decReg(reg) {
         this.writeReg(reg, this.readReg(reg) - 1);
     }
 
-    // Writes a value to a memory location
+    /**
+     * Writes a value to a memory location.
+     * @param {Number} addr Memory address (0-255)
+     * @param {Number} val Value (0-255)
+     */
     writeMem(addr, val) {
         this.memory.set(addr, val);
     }
 
-    // Reads a value from memory
-    readMem(val) {
-        return this.memory.get(val);
+    /**
+     * Returns a value from a memory adress.
+     * @param {Number} addr Address (0-255)
+     */
+    readMem(addr) {
+        return this.memory.get(addr);
     }
 
-    // Returns true if the register exists
+    /**
+     * Writes a value to a memory location by the address
+     * of a pointer.
+     * @param {Number} addr Memory address (0-255)
+     * @param {Number} val Value (0-255)
+     */
+    writePointer(addr, val) {
+        this.writeMem(this.readMem(addr), val);
+    }
+
+    /**
+     * Returns a value from the address of a pointer.
+     * @param {Number} addr Address (0-255)
+     */
+    readPointer(addr) {
+        return this.readMem(this.readMem(addr));
+    }
+
+    /**
+     * Returns true if the register exists.
+     * @param {Number} reg GP Register index (0-3)
+     */
     registerExists(reg) {
         return !(reg < 0 || reg >= this.gpr.length);
     }
