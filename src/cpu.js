@@ -403,7 +403,7 @@ export class CPU {
 
     /**
      * Sets the instruction pointer (IP) to the specified address.
-     * If the address does not exist, throws an error.
+     * If the address does not exist, an exception is raised.
      * @param {Number} addr Address (0-255)
      */
     jump(addr) {
