@@ -65,6 +65,7 @@ export class CPU {
                 this.ip++
                 break;
 
+            // MOV
             case codes.MOV_REG_TO_REG:
                 aux = this.readMem(++this.ip);
                 dst = this.readReg(utils.hBits(aux));
@@ -72,14 +73,14 @@ export class CPU {
                 this.writeReg(dst, src);
                 this.ip++;
                 break;
-            
+
             case codes.MOV_ADDRESS_TO_REG:
                 dst = this.readPointer(++this.ip);
                 src = this.readMem(++this.ip);
                 this.writeReg(dst, src);
                 this.ip++;
                 break;
-                
+
             case codes.MOV_REGADDRESS_TO_REG:
                 aux = this.readMem(++this.ip);
                 dst = utils.hBits(aux);
@@ -87,14 +88,14 @@ export class CPU {
                 this.writeReg(dst, src);
                 this.ip++;
                 break;
-            
+
             case codes.MOV_REG_TO_ADDRESS:
                 dst = this.readReg(this.readMem(++this.ip));
                 src = this.readMem(++this.ip);
                 this.writeMem(dst, src);
                 this.ip++;
                 break;
-                    
+
             case codes.MOV_REG_TO_REGADDRESS:
                 aux = this.readMem(++this.ip);
                 dst = this.readReg(utils.hBits(aux));
@@ -102,21 +103,21 @@ export class CPU {
                 this.writeRegAddress(dst, src);
                 this.ip++
                 break;
-                    
+
             case codes.MOV_NUMBER_TO_REG:
                 dst = this.readMem(++this.ip);
                 src = this.readMem(++this.ip);
                 this.writeReg(dst, src);
                 this.ip++;
                 break;
-                    
+
             case codes.MOV_NUMBER_TO_ADDRESS:
                 dst = this.readMem(++this.ip);
                 src = this.readMem(++this.ip);
                 this.writeMem(dst, src);
                 this.ip++;
                 break;
-                    
+
             case codes.MOV_NUMBER_TO_REGADDRESS:
                 dst = this.readMem(++this.ip);
                 src = this.readMem(++this.ip);
@@ -124,6 +125,7 @@ export class CPU {
                 this.ip++;
                 break;
 
+            // ADD
             case codes.ADD_REG_TO_REG:
                 aux = this.readMem(++this.ip);
                 dst = this.readReg(utils.hBits(aux));
@@ -157,7 +159,8 @@ export class CPU {
                 this.writeReg(dst, val);
                 this.ip++;
                 break;
-            
+
+            // SUB
             case codes.SUB_REG_FROM_REG:
                 aux = this.readMem(++this.ip);
                 dst = this.readReg(utils.hBits(aux));
@@ -166,7 +169,7 @@ export class CPU {
                 this.writeReg(dst, val);
                 this.ip++;
                 break;
-                
+
             case codes.SUB_REGADDRESS_FROM_REG:
                 aux = this.readMem(++this.ip);
                 dst = utils.hBits(aux);
@@ -175,7 +178,7 @@ export class CPU {
                 this.writeReg(dst, val);
                 this.ip++;
                 break;
-                    
+
             case codes.SUB_ADDRESS_FROM_REG:
                 dst = this.readMem(++this.ip);
                 src = this.readPointer(++this.ip);
@@ -183,7 +186,7 @@ export class CPU {
                 this.writeReg(dst, val);
                 this.ip++;
                 break;
-                    
+
             case codes.SUB_NUMBER_FROM_REG:
                 dst = this.readMem(++this.ip);
                 src = this.readMem(++this.ip);
@@ -192,15 +195,47 @@ export class CPU {
                 this.ip++;
                 break;
 
+            // INC, DEC
             case codes.INC_REG:
                 dst = this.readMem(++this.ip);
                 this.incReg(dst);
                 this.ip++;
                 break;
-            
+
             case codes.DEC_REG:
                 dst = this.readMem(++this.ip);
                 this.decReg(dst);
+                this.ip++;
+                break;
+
+            // CMP
+            case codes.CMP_REG_WITH_REG:
+                aux = this.readMem(++this.ip);
+                dst = this.readReg(utils.hBits(aux));
+                src = this.readReg(utils.lBits(aux));
+                this.processResult(dst - src);
+                this.ip++;
+                break;
+
+            case codes.CMP_REGADDRESS_WITH_REG:
+                aux = this.readMem(++this.ip);
+                dst = this.readReg(utils.hBits(aux));
+                src = this.readRegAddress(utils.lBits(aux));
+                this.processResult(dst - src);
+                this.ip++;
+                break;
+
+            case codes.CMP_ADDRESS_WITH_REG:
+                dst = this.readReg(++this.ip);
+                src = this.readPointer(++this.ip);
+                this.processResult(dst - src);
+                this.ip++;
+                break;
+
+            case codes.CMP_NUMBER_WITH_REG:
+                dst = this.readReg(++this.ip);
+                src = this.readMem(++this.ip);
+                this.processResult(dst - src);
                 this.ip++;
                 break;
 
