@@ -46,6 +46,18 @@ export const Opcodes = {
     // JMP, JC, JNC, JZ, JNZ, JA, JNA
     JMP_REGADDRESS: 24,             // Needs next 1 byte
     JMP_ADDRESS: 25,                // Needs next 1 byte
+    JC_REGADDRESS: 26,              // Needs next 1 byte
+    JC_ADDRESS: 27,                 // Needs next 1 byte
+    JNC_REGADDRESS: 28,
+    JNC_ADDRESS: 29,
+    JZ_REGADDRESS: 30,
+    JZ_ADDRESS: 31,
+    JNZ_REGADDRESS: 32,
+    JNZ_ADDRESS: 33,
+    JA_REGADDRESS: 34,
+    JA_ADDRESS: 35,
+    JNA_REGADDRESS: 36,
+    JNA_ADDRESS: 37,
 
     // PUSH, POP
     // CALL, RET

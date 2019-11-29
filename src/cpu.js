@@ -250,6 +250,16 @@ export class CPU {
                 this.jump(aux);
                 break;
 
+            case codes.JC_REGADDRESS:
+                aux = this.readRegAddr(this.readMem(++this.ip));
+                this.jumpCarry(aux, true);
+                break;
+            
+            case codes.JC_ADDRESS:
+                aux = this.readMem(this.readMem(++this.ip));
+                this.jumpCarry(aux, false);
+                break;
+
             case codes.STOP:
                 return false;
 
@@ -403,6 +413,7 @@ export class CPU {
 
     /**
      * Sets the instruction pointer (IP) to the specified address.
+     * 
      * If the address does not exist, an exception is raised.
      * @param {Number} addr Address (0-255)
      */
@@ -412,5 +423,38 @@ export class CPU {
         }
 
         this.ip = addr;
+    }
+
+    /**
+     * Sets the instruction pointer (IP) to the specified address
+     * if the carry flag is set to the specified state.
+     * If the condition is not met, sets the IP the next memory
+     * block;
+     * 
+     * If the address does not exist, an exception is raised.
+     * @param {Number} addr Address (0-255)
+     * @param {Number} state Carry flag state (true/false)
+     */
+    jumpCarry(addr, state) {
+        // If there should be a carry flag to jump
+        if (state) {
+            // If the carry flag is set
+            if (this.flags.carry) {
+                // Jump to the address
+                this.jump(addr);
+            } else {
+                // Continue
+                this.jump(++this.ip);
+            }
+        } else {
+            // If the carry flag is not set
+            if (!this.flags.carry) {
+                // Jump to the address
+                this.jump(addr);
+            } else {
+                // Continue
+                this.jump(++this.ip);
+            }
+        }
     }
 }
