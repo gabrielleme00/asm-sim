@@ -43,7 +43,7 @@ export const Opcodes = {
     CMP_ADDRESS_WITH_REG: 22,       // Needs next 2 bytes
     CMP_NUMBER_WITH_REG: 23,        // Needs next 2 bytes
     
-    // JMP, JC, JNC, JZ, JNZ, JA, JNA
+    // JMP variants
     JMP_REGADDRESS: 24,             // Needs next 1 byte
     JMP_ADDRESS: 25,                // Needs next 1 byte
     JC_REGADDRESS: 26,              // Needs next 1 byte
@@ -54,10 +54,11 @@ export const Opcodes = {
     JZ_ADDRESS: 31,
     JNZ_REGADDRESS: 32,
     JNZ_ADDRESS: 33,
-    JA_REGADDRESS: 34,
-    JA_ADDRESS: 35,
+    JA_REGADDRESS: 34,              // Needs next 1 byte
+    JA_ADDRESS: 35,                 // Needs next 1 byte
     JNA_REGADDRESS: 36,
     JNA_ADDRESS: 37,
+    // http://marco.uminho.pt/~joao/Computacao2/node47.html
 
     // PUSH, POP
     // CALL, RET
