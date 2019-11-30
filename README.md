@@ -8,6 +8,7 @@ A simple computer simulator made for fun and study purposes.
 - [X] Clock
 - [X] Opcodes list (WIP)
     - [ ] Add missing opcodes
+- [ ] LCD-like module
 - [ ] Map memory to output
 - UI
     - [ ] Code editor
