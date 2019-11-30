@@ -1,0 +1,41 @@
+/*
+    - Color scheme:
+    https://coolors.co/657676-435757-2c3639-828678-8b342f
+*/
+
+body {
+    background-color: #435757;
+}
+
+.window {
+    width: 100%;
+    background-color: #2C3639;
+    border: 1px solid black;
+}
+
+.window-title, .window-content {
+    font-family: monospace;
+    margin: 2% 0 2% 2%;
+    width: 96%;
+}
+
+.window-title {
+    background-color: #828678;
+    color: #2C3639;
+    font-weight: 400;
+    text-align: center;
+}
+
+.window-content {
+    color: #e6e6e6;
+    font-family: monospace;
+}
+
+.window-content textarea,
+.window-content textarea:focus {
+    background-color: #657676;
+    border-color: #657676;
+    border-radius: 0;
+    color: #e6e6e6;
+    min-height: 400px;
+}
