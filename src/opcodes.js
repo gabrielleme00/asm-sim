@@ -84,10 +84,10 @@ export const Opcodes = {
     MUL_NUMBER: 63,                 // Needs next 1 byte
 
     // DIV
-    DIV_REG: 64,
-    DIV_REGADDRESS: 65,
-    DIV_ADDRESS: 66,
-    DIV_NUMBER: 67,
+    DIV_REG: 64,                    // Needs next 1 byte
+    DIV_REGADDRESS: 65,             // Needs next 1 byte
+    DIV_ADDRESS: 66,                // Needs next 1 byte
+    DIV_NUMBER: 67,                 // Needs next 1 byte
 
     // AND
     AND_REG_WITH_REG: 70,
