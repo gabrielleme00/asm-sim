@@ -62,7 +62,6 @@ export class CPU {
 
         switch (instr) {
             case codes.NOP:
-                console.log("NOP, HALT");
                 console.log(this);
                 return false;
 
@@ -131,7 +130,7 @@ export class CPU {
                 aux = this.readMem(++this.ip);
                 dst = this.readReg(utils.hBits(aux));
                 src = this.readReg(utils.lBits(aux));
-                val = this.processResult(dst + src);
+                val = this.processResult(this.readReg(dst) + src);
                 this.writeReg(dst, val);
                 this.ip++;
                 break;
@@ -148,7 +147,7 @@ export class CPU {
             case codes.ADD_ADDRESS_TO_REG:
                 dst = this.readMem(++this.ip);
                 src = this.readPointer(++this.ip);
-                val = this.processResult(dst + src);
+                val = this.processResult(this.readReg(dst) + src);
                 this.writeReg(dst, val);
                 this.ip++;
                 break;
@@ -166,7 +165,7 @@ export class CPU {
                 aux = this.readMem(++this.ip);
                 dst = this.readReg(utils.hBits(aux));
                 src = this.readReg(utils.lBits(aux));
-                val = this.processResult(dst - src);
+                val = this.processResult(this.readReg(dst) - src);
                 this.writeReg(dst, val);
                 this.ip++;
                 break;
@@ -183,7 +182,7 @@ export class CPU {
             case codes.SUB_ADDRESS_FROM_REG:
                 dst = this.readMem(++this.ip);
                 src = this.readPointer(++this.ip);
-                val = this.processResult(dst - src);
+                val = this.processResult(this.readReg(dst) - src);
                 this.writeReg(dst, val);
                 this.ip++;
                 break;
