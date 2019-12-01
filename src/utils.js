@@ -5,7 +5,7 @@
 "use strict";
 
 /**
- * 4 higher (leftmost) bits
+ * 4 higher (leftmost) bits.
  * @param {Uint8} value
  */
 export function hBits(value) {
@@ -13,9 +13,19 @@ export function hBits(value) {
 }
 
 /**
- * 4 lower (rightmost) bits
+ * 4 lower (rightmost) bits.
  * @param {Uint8} value
  */
 export function lBits(value) {
     return value & 0x0F;
+}
+
+/**
+ * Keeps a value within the computer boundaries
+ * (0x00 to 0xFF).
+ * @param {Number} value
+ */
+export function confine(value) {
+    if (value < 0x00) return 0x00;
+    if (value < 0xFF) return 0xFF;
 }

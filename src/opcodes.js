@@ -4,6 +4,8 @@
     Notes:
     - Some operations may need a different amount of
     reserved bytes.
+    - Operations with a commented "byte need" are
+    already implemented.
 */
 
 "use strict";
@@ -54,19 +56,19 @@ export const Opcodes = {
     JZ_ADDRESS: 37,                 // Needs next 1 byte
     JNZ_REGADDRESS: 38,             // Needs next 1 byte
     JNZ_ADDRESS: 39,                // Needs next 1 byte
-    JA_REGADDRESS: 40,              // Needs next 1 byte
-    JA_ADDRESS: 41,                 // Needs next 1 byte
-    JNA_REGADDRESS: 42,             // Needs next 1 byte
-    JNA_ADDRESS: 43,                // Needs next 1 byte
+    JA_REGADDRESS: 40,
+    JA_ADDRESS: 41,
+    JNA_REGADDRESS: 42,
+    JNA_ADDRESS: 43,
 
     // PUSH
-    PUSH_REG: 50,
-    PUSH_REGADDRESS: 51,
-    PUSH_ADDRESS: 52,
-    PUSH_NUMBER: 53,
+    PUSH_REG: 50,                   // Needs next 1 byte
+    PUSH_REGADDRESS: 51,            // Needs next 1 byte
+    PUSH_ADDRESS: 52,               // Needs next 1 byte
+    PUSH_NUMBER: 53,                // Needs next 1 byte
 
     // POP
-    POP_REG: 54,
+    POP_REG: 54,                    // Needs next 1 byte
 
     // CALL
     CALL_REGADDRESS: 55,
@@ -118,7 +120,5 @@ export const Opcodes = {
     SHR_REG_WITH_REG: 94,
     SHR_REGADDRESS_WITH_REG: 95,
     SHR_ADDRESS_WITH_REG: 96,
-    SHR_NUMBER_WITH_REG: 97,
-    
-    STOP: 255
+    SHR_NUMBER_WITH_REG: 97
 }

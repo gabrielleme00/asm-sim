@@ -5,6 +5,7 @@
 "use strict";
 
 import * as utils from './utils.js';
+import { Opcodes } from './opcodes.js';
 
 export class CPU {
     /**
@@ -12,11 +13,13 @@ export class CPU {
      * @param {RAM} memory Memory size in bytes
      * @param {Object} opcodes Opcode list object
      */
-    constructor(memory, opcodes) {
-        // General Purpose Registers
+    constructor(memory) {
+        // General Purpose Registers (A, B, C, D)
         this.gpr = new Uint8Array(4);
         // Instruction Pointer
         this.ip = 0;
+        // Stack pointer
+        this.sp = 0xE8;
         // Flags
         this.flags = {
             carry: false,
@@ -26,16 +29,13 @@ export class CPU {
 
         // RAM reference
         this.memory = memory;
-
-        // Opcodes reference
-        this.opcodes = opcodes;
     }
 
     /**
      * Clock tick
      */
     tick() {
-        // Raises an error if the last operation was faulty.
+        // Raises an exception if the last operation was faulty.
         if (this.flags.fault) {
             throw "FAULT";
         }
@@ -56,14 +56,13 @@ export class CPU {
      */
     decode(instr) {
         // Opcodes list
-        const codes = this.opcodes;
+        const codes = Opcodes;
         // Aux variables
         let val, src, dst, aux;
 
         switch (instr) {
             case codes.NOP:
-                this.ip++
-                break;
+                return false;
 
             // MOV
             case codes.MOV_REG_TO_REG:
@@ -257,11 +256,64 @@ export class CPU {
             
             case codes.JC_ADDRESS:
                 aux = this.readMem(this.readMem(++this.ip));
+                this.jumpCarry(aux, true);
+                break;
+
+            case codes.JNC_REGADDRESS:
+                aux = this.readRegAddr(this.readMem(++this.ip));
+                this.jumpCarry(aux, false);
+                break;
+            
+            case codes.JNC_ADDRESS:
+                aux = this.readMem(this.readMem(++this.ip));
                 this.jumpCarry(aux, false);
                 break;
 
-            case codes.STOP:
-                return false;
+            case codes.JZ_REGADDRESS:
+                aux = this.readRegAddr(this.readMem(++this.ip));
+                this.jumpZero(aux, true);
+                break;
+            
+            case codes.JZ_ADDRESS:
+                aux = this.readMem(this.readMem(++this.ip));
+                this.jumpZero(aux, true);
+                break;
+
+            case codes.JNZ_REGADDRESS:
+                aux = this.readRegAddr(this.readMem(++this.ip));
+                this.jumpZero(aux, false);
+                break;
+            
+            case codes.JNZ_ADDRESS:
+                aux = this.readMem(this.readMem(++this.ip));
+                this.jumpZero(aux, false);
+                break;
+
+            // PUSH
+            case codes.PUSH_REG:
+                aux = this.readMem(++this.ip);
+                this.push(this.readReg(aux));
+                break;
+
+            case codes.PUSH_REGADDRESS:
+                aux = this.readMem(++this.ip);
+                this.push(this.readRegAddr(aux));
+                break;
+
+            case codes.PUSH_ADDRESS:
+                aux = this.readMem(++this.ip);
+                this.push(this.readMem(aux));
+                break;
+
+            case codes.PUSH_NUMBER:
+                aux = this.readMem(++this.ip);
+                this.push(aux);
+                break;
+
+            case codes.POP_REG:
+                aux = this.readMem(++this.ip);
+                this.pop(aux);
+                break;
 
             default:
                 throw "Invalid opcode: " + instr;
@@ -292,25 +344,22 @@ export class CPU {
 
     /**
      * Writes a value to a register.
-     * @param {Number} reg GP Register (0-3)
-     * @param {Number} val Value (0-255)
+     * @param {Number} reg GP Register (0~3)
+     * @param {Number} val Value (0x00~0xFF)
      */
     writeReg(reg, val) {
         if (!this.registerExists(reg)) {
             throw "Register does not exist: " + reg;
         }
 
-        // Handle value too large
-        if (val > 0xFF) {
-            val = 0xFF;
-        }
+        val = utils.confine(val);
 
         this.gpr[reg] = val;
     }
 
     /**
      * Returns the value of a register.
-     * @param {Number} reg GP Register index (0-3)
+     * @param {Number} reg GP Register index (0~3)
      */
     readReg(reg) {
         // Handle non-existent register.
@@ -323,25 +372,22 @@ export class CPU {
 
     /**
      * Writes to memory from a value stored in a register.
-     * @param {Number} reg GP Register (0-3)
-     * @param {Number} val Value (0-255)
+     * @param {Number} reg GP Register (0~3)
+     * @param {Number} val Value (0x00~0xFF)
      */
     writeRegAddress(reg, val) {
         if (!this.registerExists(reg)) {
             throw "Register does not exist: " + reg;
         }
 
-        // Handle value too large
-        if (val > 0xFF) {
-            val = 0xFF;
-        }
+        val = utils.confine(val);
 
         this.writeMem(this.gpr[reg], val);
     }
 
     /**
      * Returns a memory value from the value of a register.
-     * @param {Number} reg GP Register index (0-3)
+     * @param {Number} reg GP Register index (0~3)
      */
     readRegAddr(reg) {
         // Handle non-existent register.
@@ -354,7 +400,7 @@ export class CPU {
 
     /**
      * Increases register value by 1.
-     * @param {Number} reg GP Register index (0-3)
+     * @param {Number} reg GP Register index (0~3)
      */
     incReg(reg) {
         this.writeReg(reg, this.readReg(reg) + 1);
@@ -362,7 +408,7 @@ export class CPU {
 
     /**
      * Decreases register value by 1.
-     * @param {Number} reg GP Register index (0-3)
+     * @param {Number} reg GP Register index (0~3)
      */
     decReg(reg) {
         this.writeReg(reg, this.readReg(reg) - 1);
@@ -370,8 +416,8 @@ export class CPU {
 
     /**
      * Writes a value to a memory location.
-     * @param {Number} addr Memory address (0-255)
-     * @param {Number} val Value (0-255)
+     * @param {Number} addr Memory address (0x00~0xFF)
+     * @param {Number} val Value (0x00~0xFF)
      */
     writeMem(addr, val) {
         this.memory.set(addr, val);
@@ -379,7 +425,7 @@ export class CPU {
 
     /**
      * Returns a value from a memory adress.
-     * @param {Number} addr Address (0-255)
+     * @param {Number} addr Address (0x00~0xFF)
      */
     readMem(addr) {
         return this.memory.get(addr);
@@ -388,8 +434,8 @@ export class CPU {
     /**
      * Writes a value to a memory location by the address
      * of a pointer.
-     * @param {Number} addr Memory address (0-255)
-     * @param {Number} val Value (0-255)
+     * @param {Number} addr Memory address (0x00~0xFF)
+     * @param {Number} val Value (0x00~0xFF)
      */
     writePointer(addr, val) {
         this.writeMem(this.readMem(addr), val);
@@ -397,7 +443,7 @@ export class CPU {
 
     /**
      * Returns a value from the address of a pointer.
-     * @param {Number} addr Address (0-255)
+     * @param {Number} addr Address (0x00~0xFF)
      */
     readPointer(addr) {
         return this.readMem(this.readMem(addr));
@@ -405,7 +451,7 @@ export class CPU {
 
     /**
      * Returns true if the register exists.
-     * @param {Number} reg GP Register index (0-3)
+     * @param {Number} reg GP Register index (0~3)
      */
     registerExists(reg) {
         return !(reg < 0 || reg >= this.gpr.length);
@@ -415,7 +461,7 @@ export class CPU {
      * Sets the instruction pointer (IP) to the specified address.
      * 
      * If the address does not exist, an exception is raised.
-     * @param {Number} addr Address (0-255)
+     * @param {Number} addr Address (0x00~0xFF)
      */
     jump(addr) {
         if (!this.memory.addressExists(addr)) {
@@ -432,7 +478,7 @@ export class CPU {
      * block;
      * 
      * If the address does not exist, an exception is raised.
-     * @param {Number} addr Address (0-255)
+     * @param {Number} addr Address (0x00~0xFF)
      * @param {Number} state Carry flag state (true/false)
      */
     jumpCarry(addr, state) {
@@ -456,5 +502,69 @@ export class CPU {
                 this.jump(++this.ip);
             }
         }
+    }
+
+    /**
+     * Sets the instruction pointer (IP) to the specified address
+     * if the zero flag is set to the specified state.
+     * If the condition is not met, sets the IP the next memory
+     * block;
+     * 
+     * If the address does not exist, an exception is raised.
+     * @param {Number} addr Address (0x00-0xFF)
+     * @param {Number} state Carry flag state (true/false)
+     */
+    jumpZero(addr, state) {
+        // If there should be a carry flag to jump
+        if (state) {
+            // If the zero flag is set
+            if (this.flags.zero) {
+                // Jump to the address
+                this.jump(addr);
+            } else {
+                // Continue
+                this.jump(++this.ip);
+            }
+        } else {
+            // If the zero flag is not set
+            if (!this.flags.zero) {
+                // Jump to the address
+                this.jump(addr);
+            } else {
+                // Continue
+                this.jump(++this.ip);
+            }
+        }
+    }
+
+    /**
+     * Pushes a value to the current address
+     * pointed at by the Stack Pointer (SP)
+     * and decrements the SP.
+     * @param {Number} val Any value
+     */
+    push(val) {
+        val = utils.confine(val);
+
+        // Write to memory and decrement SP
+        this.writeMem(this.sp--, val);
+    }
+
+    /**
+     * Pushes a value to the current address
+     * pointed at by the Stack Pointer (SP)
+     * and decrements the SP.
+     * 
+     * If the register does not exist, an exception is raised.
+     * @param {Number} reg GP Register index (0~3)
+     */
+    pop(reg) {
+        // Handle non-existent register.
+        if (!this.registerExists(reg)) {
+            throw "Register does not exist: " + reg;
+        }
+
+        // Write to register and increment SP
+        this.writeReg(reg, this.readMem(this.sp++));
     }
 }
