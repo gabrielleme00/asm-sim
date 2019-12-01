@@ -62,6 +62,8 @@ export class CPU {
 
         switch (instr) {
             case codes.NOP:
+                console.log("NOP, HALT");
+                console.log(this);
                 return false;
 
             // MOV
