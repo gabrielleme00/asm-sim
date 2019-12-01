@@ -348,7 +348,7 @@ export class CPU {
      * @param {Number} val Value (0x00~0xFF)
      */
     writeReg(reg, val) {
-        if (!this.registerExists(reg)) {
+        if (!utils.registerExists(reg)) {
             throw "Register does not exist: " + reg;
         }
 
@@ -363,7 +363,7 @@ export class CPU {
      */
     readReg(reg) {
         // Handle non-existent register.
-        if (!this.registerExists(reg)) {
+        if (!utils.registerExists(reg)) {
             throw "Register does not exist: " + reg;
         }
 
@@ -376,7 +376,7 @@ export class CPU {
      * @param {Number} val Value (0x00~0xFF)
      */
     writeRegAddress(reg, val) {
-        if (!this.registerExists(reg)) {
+        if (!utils.registerExists(reg)) {
             throw "Register does not exist: " + reg;
         }
 
@@ -391,7 +391,7 @@ export class CPU {
      */
     readRegAddr(reg) {
         // Handle non-existent register.
-        if (!this.registerExists(reg)) {
+        if (!utils.registerExists(reg)) {
             throw "Register does not exist: " + reg;
         }
 
@@ -447,14 +447,6 @@ export class CPU {
      */
     readPointer(addr) {
         return this.readMem(this.readMem(addr));
-    }
-
-    /**
-     * Returns true if the register exists.
-     * @param {Number} reg GP Register index (0~3)
-     */
-    registerExists(reg) {
-        return !(reg < 0 || reg >= this.gpr.length);
     }
 
     /**
@@ -560,7 +552,7 @@ export class CPU {
      */
     pop(reg) {
         // Handle non-existent register.
-        if (!this.registerExists(reg)) {
+        if (!utils.registerExists(reg)) {
             throw "Register does not exist: " + reg;
         }
 
