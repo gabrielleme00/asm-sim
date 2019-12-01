@@ -26,6 +26,10 @@ export class RAM {
         }
 
         if (Array.isArray(val)) {
+            if (addr + val.length > this.memory.length) {
+                throw "Values to be stored exceed memory length";
+            }
+
             for (let i = 0; i < val.length; i++) {
                 // Handle value too large
                 val = val > 0xFF ? 0xFF : val;
