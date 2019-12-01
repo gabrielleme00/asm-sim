@@ -33,6 +33,24 @@ export function confine(value) {
 }
 
 /**
+ * Compresses two 4-bit numbers into
+ * a single 8-bit number.
+ * The first value becomes the higher bits.
+ * @param {Number} val1 Value 1
+ * @param {Number} val2 Value 2
+ */
+export function compress(val1, val2) {
+    let result = 0;
+
+    val1 = confine(val1);
+    val2 = confine(val2);
+
+    result = val1 << 4 ^ val2;
+
+    return result;
+}
+
+/**
  * Returns true if the register exists.
  * @param {Number} reg GP Register index (0~3)
  */
