@@ -1,5 +1,6 @@
 /*
-    Some useful functions
+    Some useful functions used
+    around the project
 */
 
 "use strict";
