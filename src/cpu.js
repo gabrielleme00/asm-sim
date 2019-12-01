@@ -156,7 +156,7 @@ export class CPU {
             case codes.ADD_NUMBER_TO_REG:
                 dst = this.readMem(++this.ip);
                 src = this.readMem(++this.ip);
-                val = this.processResult(dst + src);
+                val = this.processResult(this.readReg(dst) + src);
                 this.writeReg(dst, val);
                 this.ip++;
                 break;
@@ -191,7 +191,7 @@ export class CPU {
             case codes.SUB_NUMBER_FROM_REG:
                 dst = this.readMem(++this.ip);
                 src = this.readMem(++this.ip);
-                val = this.processResult(dst - src);
+                val = this.processResult(this.readReg(dst) - src);
                 this.writeReg(dst, val);
                 this.ip++;
                 break;
