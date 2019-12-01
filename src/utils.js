@@ -27,5 +27,15 @@ export function lBits(value) {
  */
 export function confine(value) {
     if (value < 0x00) return 0x00;
-    if (value < 0xFF) return 0xFF;
+    if (value > 0xFF) return 0xFF;
+
+    return value;
+}
+
+/**
+ * Returns true if the register exists.
+ * @param {Number} reg GP Register index (0~3)
+ */
+export function registerExists(reg) {
+    return !(reg < 0 || reg > 3);
 }
