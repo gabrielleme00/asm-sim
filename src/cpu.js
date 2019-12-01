@@ -100,7 +100,7 @@ export class CPU {
                 aux = this.readMem(++this.ip);
                 dst = this.readReg(utils.hBits(aux));
                 src = this.readReg(utils.lBits(aux));
-                this.writeRegAddress(dst, src);
+                this.writeRegAddr(dst, src);
                 this.ip++
                 break;
 
@@ -121,7 +121,7 @@ export class CPU {
             case codes.MOV_NUMBER_TO_REGADDRESS:
                 dst = this.readMem(++this.ip);
                 src = this.readMem(++this.ip);
-                this.writeRegAddress(dst, src);
+                this.writeRegAddr(dst, src);
                 this.ip++;
                 break;
 
@@ -294,26 +294,61 @@ export class CPU {
             case codes.PUSH_REG:
                 aux = this.readMem(++this.ip);
                 this.push(this.readReg(aux));
+                this.ip++;
                 break;
 
             case codes.PUSH_REGADDRESS:
                 aux = this.readMem(++this.ip);
                 this.push(this.readRegAddr(aux));
+                this.ip++;
                 break;
 
             case codes.PUSH_ADDRESS:
                 aux = this.readMem(++this.ip);
                 this.push(this.readMem(aux));
+                this.ip++;
                 break;
 
             case codes.PUSH_NUMBER:
                 aux = this.readMem(++this.ip);
                 this.push(aux);
+                this.ip++;
                 break;
 
+            // POP
             case codes.POP_REG:
                 aux = this.readMem(++this.ip);
                 this.pop(aux);
+                this.ip++;
+                break;
+            
+            // MUL
+            case codes.MUL_REG:
+                aux = this.readMem(++this.ip);
+                val = this.processResult(this.readReg(0) * this.readReg(aux));
+                this.writeReg(0, val);
+                this.ip++;
+                break;
+
+            case codes.MUL_REGADDRESS:
+                aux = this.readMem(++this.ip);
+                val = this.processResult(this.readReg(0) * this.readRegAddr(aux));
+                this.writeReg(0, val);
+                this.ip++;
+                break;
+
+            case codes.MUL_ADDRESS:
+                aux = this.readMem(++this.ip);
+                val = this.processResult(this.readReg(0) * this.readMem(aux));
+                this.writeReg(0, val);
+                this.ip++;
+                break;
+
+            case codes.MUL_NUMBER:
+                aux = this.readMem(++this.ip);
+                val = this.processResult(this.readReg(0) * aux);
+                this.writeReg(0, val);
+                this.ip++;
                 break;
 
             default:
@@ -376,7 +411,7 @@ export class CPU {
      * @param {Number} reg GP Register (0~3)
      * @param {Number} val Value (0x00~0xFF)
      */
-    writeRegAddress(reg, val) {
+    writeRegAddr(reg, val) {
         if (!utils.registerExists(reg)) {
             throw "Register does not exist: " + reg;
         }
