@@ -351,6 +351,35 @@ export class CPU {
                 this.ip++;
                 break;
 
+            // DIV
+            case codes.DIV_REG:
+                aux = this.readMem(++this.ip);
+                val = this.processResult(this.readReg(0) / this.readReg(aux));
+                this.writeReg(0, val);
+                this.ip++;
+                break;
+
+            case codes.DIV_REGADDRESS:
+                aux = this.readMem(++this.ip);
+                val = this.processResult(this.readReg(0) / this.readRegAddr(aux));
+                this.writeReg(0, val);
+                this.ip++;
+                break;
+
+            case codes.DIV_ADDRESS:
+                aux = this.readMem(++this.ip);
+                val = this.processResult(this.readReg(0) / this.readMem(aux));
+                this.writeReg(0, val);
+                this.ip++;
+                break;
+
+            case codes.DIV_NUMBER:
+                aux = this.readMem(++this.ip);
+                val = this.processResult(this.readReg(0) / aux);
+                this.writeReg(0, val);
+                this.ip++;
+                break;
+
             default:
                 throw "Invalid opcode: " + instr;
         }
