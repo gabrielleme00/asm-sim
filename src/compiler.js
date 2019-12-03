@@ -28,6 +28,14 @@ function getReg(name) {
     }
 }
 
+/**
+ * Returns true if the arguments' length is enough
+ * for the given instruction.
+ * 
+ * If the instruction is unknown, raises an exception.
+ * @param {String} instr Instruction 
+ * @param {Array<String>} args Arguments array
+ */
 function hasEnoughArgs(instr, args) {
     switch (instr) {
         case "INC":
@@ -94,7 +102,8 @@ function isAddr(str) {
  * @param {String} str Any string
  */
 function isRegAddr(str) {
-    // Check if the string has 3 chars ("[X]")
+    // Check if the string has 3 chars ("[X]"),
+    // where 'X' is a register char,
     // and if the inner char is a valid register
     return str.length === 3 && isReg(str.charAt(1));
 }
