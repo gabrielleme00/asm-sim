@@ -10,24 +10,23 @@ import { Compiler } from './compiler.js';
 const computer = new Computer();
 const compiler = new Compiler();
 
-const code = `
-    INC B        ; Increases B register
+const btnCompile = document.getElementById('btnCompile');
 
-    ADD A, B
-    ADD A, 2        
-    ADD A, 0x0C
-    ADD A, [B]
-    ADD A, [0x00]
+btnCompile.addEventListener('click', () => {
+    const code = document.getElementById("codeArea").value;
 
-    HLT         ; Stops the computer
-`;
+    compile(code);
+});
 
-try {
-    const compiled = compiler.compile(code);
+function compile(code) {
+    try {
+        const compiled = compiler.compile(code);
 
-    computer.memory.set(0, compiled);
-    computer.start(10);
-    
-} catch (error) {
-    console.error(error);
+        computer.memory.set(0, compiled);
+        computer.start(10);
+        
+    } catch (error) {
+        console.error(error);
+        alert(error);
+    }
 }
