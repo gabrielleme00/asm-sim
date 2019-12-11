@@ -11,7 +11,13 @@ body {
     width: 100%;
     background-color: #2C3639;
     border: 1px solid black;
-    box-shadow: 5px 5px 8px black;
+    box-shadow: 0 0 4px black;
+    transition: 100ms;
+}
+
+.window:hover {
+    box-shadow: 2px 2px 8px black;
+    transition: 100ms;
 }
 
 .window-title, .window-content {
