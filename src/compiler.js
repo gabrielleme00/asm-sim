@@ -1,3 +1,7 @@
+/**
+ * A *VERY* basic ASM compiler
+ */
+
 import * as utils from './utils.js';
 import { Opcodes } from './opcodes.js';
 

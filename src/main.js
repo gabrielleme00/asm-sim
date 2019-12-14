@@ -6,6 +6,7 @@
 
 import { Computer } from './computer.js';
 import { Compiler } from './compiler.js';
+import { Screen } from './screen.js';
 
 const computer = new Computer();
 const compiler = new Compiler();
@@ -30,3 +31,10 @@ function compile(code) {
         alert(error);
     }
 }
+
+// SCREEN TESTS
+const canvas = document.getElementById("lcd");
+const screen = new Screen(canvas, 8, "#828678");
+screen.drawChar(48, 0, 0);
+screen.drawChar(49, 1, 0);
+screen.drawChar(48, 1, 1);
