@@ -11,7 +11,13 @@ body {
     width: 100%;
     background-color: #2C3639;
     border: 1px solid black;
-    box-shadow: 5px 5px 8px black;
+    box-shadow: 0 0 4px black;
+    transition: 100ms;
+}
+
+.window:hover {
+    box-shadow: 2px 2px 8px black;
+    transition: 100ms;
 }
 
 .window-title, .window-content {
@@ -38,5 +44,5 @@ body {
     border-color: #657676;
     border-radius: 0;
     color: #e6e6e6;
-    min-height: 400px;
+    min-height: 300px;
 }

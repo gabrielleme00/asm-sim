@@ -1,3 +1,7 @@
+/**
+ * A *VERY* basic ASM compiler
+ */
+
 import * as utils from './utils.js';
 import { Opcodes } from './opcodes.js';
 
@@ -28,13 +32,23 @@ function getReg(name) {
     }
 }
 
+/**
+ * Returns true if the arguments' length is enough
+ * for the given instruction.
+ * 
+ * If the instruction is unknown, raises an exception.
+ * @param {String} instr Instruction 
+ * @param {Array<String>} args Arguments array
+ */
 function hasEnoughArgs(instr, args) {
     switch (instr) {
         case "INC":
+        case "DEC":
             return args.length >= 1;
 
         case "ADD":
-        case "DEC":
+        case "SUB":
+        case "MOV":
             return args.length >= 2;
 
         default:
@@ -94,7 +108,8 @@ function isAddr(str) {
  * @param {String} str Any string
  */
 function isRegAddr(str) {
-    // Check if the string has 3 chars ("[X]")
+    // Check if the string has 3 chars ("[X]"),
+    // where 'X' is a register char,
     // and if the inner char is a valid register
     return str.length === 3 && isReg(str.charAt(1));
 }
@@ -186,22 +201,90 @@ export class Compiler {
                     result.push(utils.compress(
                         getReg(args[0]), getReg(args[1])
                     ));
-
                 } else if (isRegAddr(args[1])) {
                     result.push(op.ADD_REGADDRESS_TO_REG);
                     result.push(utils.compress(
                         getReg(args[0]), getReg(args[1]) 
                     ));
-
                 } else if (isAddr(args[1])) {
-                    // TODO: Support relative-to-reg-value addresses
                     result.push(op.ADD_ADDRESS_TO_REG);
                     result.push(getReg(args[0]));
                     result.push(utils.confine(parseInt(args[1])));
                 } else {
                     throw "2nd argument is of unknown type in "
                     + instr + " instruction";
+                }
+                break;
 
+            case "SUB":
+                if (isNum(args[1])) {
+                    result.push(op.SUB_NUMBER_TO_REG);
+                    result.push(getReg(args[0]));
+                    result.push(utils.confine(parseInt(args[1])));
+                } else if (isReg(args[1])) {
+                    result.push(op.SUB_REG_TO_REG);
+                    result.push(utils.compress(
+                        getReg(args[0]), getReg(args[1])
+                    ));
+                } else if (isRegAddr(args[1])) {
+                    result.push(op.SUB_REGADDRESS_TO_REG);
+                    result.push(utils.compress(
+                        getReg(args[0]), getReg(args[1]) 
+                    ));
+                } else if (isAddr(args[1])) {
+                    result.push(op.SUB_ADDRESS_TO_REG);
+                    result.push(getReg(args[0]));
+                    result.push(utils.confine(parseInt(args[1])));
+                } else {
+                    throw "2nd argument is of unknown type in "
+                    + instr + " instruction";
+                }
+                break;
+
+            case "MOV":
+                if (isReg(args[0])) {
+                    if (isNum(args[1])) {
+                        result.push(op.MOV_NUMBER_TO_REG);
+                        result.push(getReg(args[0]));
+                        result.push(utils.confine(parseInt(args[1])));
+                    } else if (isReg(args[1])) {
+                        result.push(op.MOV_REG_TO_REG);
+                        result.push(utils.compress(
+                            getReg(args[0]), getReg(args[1])
+                        ));
+                    } else if (isRegAddr(args[1])) {
+                        result.push(op.MOV_REGADDRESS_TO_REG);
+                        result.push(utils.compress(
+                            getReg(args[0]), getReg(args[1]) 
+                        ));
+                    } else if (isAddr(args[1])) {
+                        result.push(op.MOV_ADDRESS_TO_REG);
+                        result.push(getReg(args[0]));
+                        result.push(utils.confine(parseInt(args[1])));
+                    }
+                } else if (isRegAddr(args[0])) {
+                    if (isNum(args[1])) {
+                        result.push(op.MOV_NUMBER_TO_REGADDRESS);
+                        result.push(getReg(args[0]));
+                        result.push(utils.confine(parseInt(args[1])));
+                    } else if (isReg(args[1])) {
+                        result.push(op.MOV_REG_TO_REGADDRESS);
+                        result.push(getReg(args[0]));
+                        result.push(getReg(args[1]));
+                    }
+                } else if (isAddr(args[0])) {
+                    if (isNum(args[1])) {
+                        result.push(op.MOV_NUMBER_TO_ADDRESS);
+                        result.push(getReg(args[0]));
+                        result.push(utils.confine(parseInt(args[1])));
+                    } else if (isReg(args[1])) {
+                        result.push(op.MOV_REG_TO_ADDRESS);
+                        result.push(getReg(args[0]));
+                        result.push(getReg(args[1]));
+                    }
+                } else {
+                    throw "2nd argument is of unknown type in "
+                    + instr + " instruction";
                 }
                 break;
 
