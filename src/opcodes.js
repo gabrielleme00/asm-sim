@@ -58,24 +58,32 @@ export const Opcodes = {
     JNZ_ADDRESS: 39,                // Needs next 1 byte
     JA_REGADDRESS: 40,
     JA_ADDRESS: 41,
-    JNA_REGADDRESS: 42,
-    JNA_ADDRESS: 43,
+    JAE_REGADDRESS: 42,
+    JAE_ADDRESS: 43,
+    JB_REGADDRESS: 44,
+    JB_ADDRESS: 45,
+    JBE_REGADDRESS: 46,
+    JBE_ADDRESS: 47,
+    JE_REGADDRESS: 48,
+    JE_ADDRESS: 49,
+    JNE_REGADDRESS: 50,
+    JNE_ADDRESS: 51,
 
     // PUSH
-    PUSH_REG: 50,                   // Needs next 1 byte
-    PUSH_REGADDRESS: 51,            // Needs next 1 byte
-    PUSH_ADDRESS: 52,               // Needs next 1 byte
-    PUSH_NUMBER: 53,                // Needs next 1 byte
+    PUSH_REG: 51,                   // Needs next 1 byte
+    PUSH_REGADDRESS: 52,            // Needs next 1 byte
+    PUSH_ADDRESS: 53,               // Needs next 1 byte
+    PUSH_NUMBER: 54,                // Needs next 1 byte
 
     // POP
-    POP_REG: 54,                    // Needs next 1 byte
+    POP_REG: 55,                    // Needs next 1 byte
 
     // CALL
-    CALL_REGADDRESS: 55,
-    CALL_ADDRESS: 56,
+    CALL_REGADDRESS: 56,
+    CALL_ADDRESS: 57,
 
     // RET
-    RET: 57,
+    RET: 58,
 
     // MUL
     MUL_REG: 60,                    // Needs next 1 byte
