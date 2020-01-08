@@ -4,7 +4,7 @@
 
 "use strict";
 
-import { Charmap } from '/charmap.js';
+import { Charmap } from './charmap.js';
 
 export class Screen {
     constructor(canvas, pixelSize, pixelColor) {

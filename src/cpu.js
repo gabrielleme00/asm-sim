@@ -246,7 +246,7 @@ export class CPU {
                 break;
 
             case codes.JMP_ADDRESS:
-                aux = this.readMem(this.readMem(++this.ip));
+                aux = this.readPointer(++this.ip);
                 this.jump(aux);
                 break;
 
@@ -266,7 +266,7 @@ export class CPU {
                 break;
             
             case codes.JNC_ADDRESS:
-                aux = this.readMem(this.readMem(++this.ip));
+                aux = this.readPointer(++this.ip);
                 this.jumpCarry(aux, false);
                 break;
 
@@ -276,7 +276,7 @@ export class CPU {
                 break;
             
             case codes.JZ_ADDRESS:
-                aux = this.readMem(this.readMem(++this.ip));
+                aux = this.readPointer(++this.ip);
                 this.jumpZero(aux, true);
                 break;
 
@@ -286,7 +286,7 @@ export class CPU {
                 break;
             
             case codes.JNZ_ADDRESS:
-                aux = this.readMem(this.readMem(++this.ip));
+                aux = this.readPointer(++this.ip);
                 this.jumpZero(aux, false);
                 break;
 
@@ -304,8 +304,8 @@ export class CPU {
                 break;
 
             case codes.PUSH_ADDRESS:
-                aux = this.readMem(++this.ip);
-                this.push(this.readMem(aux));
+                aux = this.readPointer(++this.ip);
+                this.push(aux);
                 this.ip++;
                 break;
 
@@ -338,8 +338,8 @@ export class CPU {
                 break;
 
             case codes.MUL_ADDRESS:
-                aux = this.readMem(++this.ip);
-                val = this.processResult(this.readReg(0) * this.readMem(aux));
+                aux = this.readPointer(++this.ip);
+                val = this.processResult(this.readReg(0) * aux);
                 this.writeReg(0, val);
                 this.ip++;
                 break;
@@ -367,8 +367,8 @@ export class CPU {
                 break;
 
             case codes.DIV_ADDRESS:
-                aux = this.readMem(++this.ip);
-                val = this.processResult(this.readReg(0) / this.readMem(aux));
+                aux = this.readPointer(++this.ip);
+                val = this.processResult(this.readReg(0) / aux);
                 this.writeReg(0, val);
                 this.ip++;
                 break;
