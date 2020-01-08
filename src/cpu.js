@@ -380,6 +380,173 @@ export class CPU {
                 this.ip++;
                 break;
 
+            case codes.AND_REG_WITH_REG:
+                dst = this.readMem(++this.ip);
+                src = this.readMem(++this.ip);
+                val = this.processResult(this.readReg(dst) & this.readReg(src));
+                this.writeReg(dst, val);
+                this.ip++;
+                break;
+
+            case codes.AND_REGADDRESS_WITH_REG:
+                dst = this.readMem(++this.ip);
+                src = this.readMem(++this.ip);
+                val = this.processResult(this.readRegAddr(dst) & this.readReg(src));
+                this.writeRegAddr(dst, val);
+                this.ip++;
+                break;
+            
+            case codes.AND_ADDRESS_WITH_REG:
+                dst = this.readMem(++this.ip);
+                src = this.readMem(++this.ip);
+                val = this.processResult(this.readMem(dst) & this.readReg(src));
+                this.writeReg(dst, val);
+                this.ip++;
+                break;
+            
+            case codes.AND_NUMBER_WITH_REG:
+                dst = this.readMem(++this.ip);
+                src = this.readMem(++this.ip);
+                val = this.processResult(dst & this.readReg(src));
+                this.writeReg(dst, val);
+                this.ip++;
+                break;
+
+            case codes.OR_REG_WITH_REG:
+                dst = this.readMem(++this.ip);
+                src = this.readMem(++this.ip);
+                val = this.processResult(this.readReg(dst) | this.readReg(src));
+                this.writeReg(dst, val);
+                this.ip++;
+                break;
+
+            case codes.OR_REGADDRESS_WITH_REG:
+                dst = this.readMem(++this.ip);
+                src = this.readMem(++this.ip);
+                val = this.processResult(this.readRegAddr(dst) | this.readReg(src));
+                this.writeRegAddr(dst, val);
+                this.ip++;
+                break;
+            
+            case codes.OR_ADDRESS_WITH_REG:
+                dst = this.readMem(++this.ip);
+                src = this.readMem(++this.ip);
+                val = this.processResult(this.readMem(dst) | this.readReg(src));
+                this.writeReg(dst, val);
+                this.ip++;
+                break;
+            
+            case codes.OR_NUMBER_WITH_REG:
+                dst = this.readMem(++this.ip);
+                src = this.readMem(++this.ip);
+                val = this.processResult(dst | this.readReg(src));
+                this.writeReg(dst, val);
+                this.ip++;
+                break;
+
+            case codes.XOR_REG_WITH_REG:
+                dst = this.readMem(++this.ip);
+                src = this.readMem(++this.ip);
+                val = this.processResult(this.readReg(dst) ^ this.readReg(src));
+                this.writeReg(dst, val);
+                this.ip++;
+                break;
+
+            case codes.XOR_REGADDRESS_WITH_REG:
+                dst = this.readMem(++this.ip);
+                src = this.readMem(++this.ip);
+                val = this.processResult(this.readRegAddr(dst) ^ this.readReg(src));
+                this.writeRegAddr(dst, val);
+                this.ip++;
+                break;
+            
+            case codes.XOR_ADDRESS_WITH_REG:
+                dst = this.readMem(++this.ip);
+                src = this.readMem(++this.ip);
+                val = this.processResult(this.readMem(dst) ^ this.readReg(src));
+                this.writeReg(dst, val);
+                this.ip++;
+                break;
+            
+            case codes.XOR_NUMBER_WITH_REG:
+                dst = this.readMem(++this.ip);
+                src = this.readMem(++this.ip);
+                val = this.processResult(dst ^ this.readReg(src));
+                this.writeReg(dst, val);
+                this.ip++;
+                break;
+
+            case codes.NOT_REG:
+                dst = this.readMem(++this.ip);
+                val = this.processResult(~this.readReg(dst));
+                this.writeReg(dst, val);
+                this.ip++;
+                break;
+
+            case codes.SHL_REG_WITH_REG:
+                dst = this.readMem(++this.ip);
+                src = this.readMem(++this.ip);
+                val = this.processResult(this.readReg(dst) << this.readReg(src));
+                this.writeReg(dst, val);
+                this.ip++;
+                break;
+
+            case codes.SHL_REGADDRESS_WITH_REG:
+                dst = this.readMem(++this.ip);
+                src = this.readMem(++this.ip);
+                val = this.processResult(this.readRegAddr(dst) << this.readReg(src));
+                this.writeRegAddr(dst, val);
+                this.ip++;
+                break;
+            
+            case codes.SHL_ADDRESS_WITH_REG:
+                dst = this.readMem(++this.ip);
+                src = this.readMem(++this.ip);
+                val = this.processResult(this.readMem(dst) << this.readReg(src));
+                this.writeReg(dst, val);
+                this.ip++;
+                break;
+            
+            case codes.SHL_NUMBER_WITH_REG:
+                dst = this.readMem(++this.ip);
+                src = this.readMem(++this.ip);
+                val = this.processResult(dst << this.readReg(src));
+                this.writeReg(dst, val);
+                this.ip++;
+                break;
+
+            case codes.SHR_REG_WITH_REG:
+                dst = this.readMem(++this.ip);
+                src = this.readMem(++this.ip);
+                val = this.processResult(this.readReg(dst) >>> this.readReg(src));
+                this.writeReg(dst, val);
+                this.ip++;
+                break;
+
+            case codes.SHR_REGADDRESS_WITH_REG:
+                dst = this.readMem(++this.ip);
+                src = this.readMem(++this.ip);
+                val = this.processResult(this.readRegAddr(dst) >>> this.readReg(src));
+                this.writeRegAddr(dst, val);
+                this.ip++;
+                break;
+            
+            case codes.SHR_ADDRESS_WITH_REG:
+                dst = this.readMem(++this.ip);
+                src = this.readMem(++this.ip);
+                val = this.processResult(this.readMem(dst) >>> this.readReg(src));
+                this.writeReg(dst, val);
+                this.ip++;
+                break;
+            
+            case codes.SHR_NUMBER_WITH_REG:
+                dst = this.readMem(++this.ip);
+                src = this.readMem(++this.ip);
+                val = this.processResult(dst >>> this.readReg(src));
+                this.writeReg(dst, val);
+                this.ip++;
+                break;
+
             default:
                 throw "Invalid opcode: " + instr;
         }
