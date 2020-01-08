@@ -90,35 +90,35 @@ export const Opcodes = {
     DIV_NUMBER: 67,                 // Needs next 1 byte
 
     // AND
-    AND_REG_WITH_REG: 70,
-    AND_REGADDRESS_WITH_REG: 71,
-    AND_ADDRESS_WITH_REG: 72,
-    AND_NUMBER_WITH_REG: 73,
+    AND_REG_WITH_REG: 70,           // Needs next 2 bytes
+    AND_REGADDRESS_WITH_REG: 71,    // Needs next 2 bytes
+    AND_ADDRESS_WITH_REG: 72,       // Needs next 2 bytes
+    AND_NUMBER_WITH_REG: 73,        // Needs next 2 bytes
 
     // OR
-    OR_REG_WITH_REG: 74,
-    OR_REGADDRESS_WITH_REG: 75,
-    OR_ADDRESS_WITH_REG: 76,
-    OR_NUMBER_WITH_REG: 77,
+    OR_REG_WITH_REG: 74,            // Needs next 2 bytes
+    OR_REGADDRESS_WITH_REG: 75,     // Needs next 2 bytes
+    OR_ADDRESS_WITH_REG: 76,        // Needs next 2 bytes
+    OR_NUMBER_WITH_REG: 77,         // Needs next 2 bytes
 
     // XOR
-    XOR_REG_WITH_REG: 78,
-    XOR_REGADDRESS_WITH_REG: 79,
-    XOR_ADDRESS_WITH_REG: 80,
-    XOR_NUMBER_WITH_REG: 81,
+    XOR_REG_WITH_REG: 78,           // Needs next 2 bytes
+    XOR_REGADDRESS_WITH_REG: 79,    // Needs next 2 bytes
+    XOR_ADDRESS_WITH_REG: 80,       // Needs next 2 bytes
+    XOR_NUMBER_WITH_REG: 81,        // Needs next 2 bytes
 
     // NOT
-    NOT_REG: 82,
+    NOT_REG: 82,                    // Needs next 1 byte
 
     // SHL
-    SHL_REG_WITH_REG: 90,
-    SHL_REGADDRESS_WITH_REG: 91,
-    SHL_ADDRESS_WITH_REG: 92,
-    SHL_NUMBER_WITH_REG: 93,
+    SHL_REG_WITH_REG: 90,           // Needs next 2 bytes
+    SHL_REGADDRESS_WITH_REG: 91,    // Needs next 2 bytes
+    SHL_ADDRESS_WITH_REG: 92,       // Needs next 2 bytes
+    SHL_NUMBER_WITH_REG: 93,        // Needs next 2 bytes
 
     // SHR
-    SHR_REG_WITH_REG: 94,
-    SHR_REGADDRESS_WITH_REG: 95,
-    SHR_ADDRESS_WITH_REG: 96,
-    SHR_NUMBER_WITH_REG: 97
+    SHR_REG_WITH_REG: 94,           // Needs next 2 bytes
+    SHR_REGADDRESS_WITH_REG: 95,    // Needs next 2 bytes
+    SHR_ADDRESS_WITH_REG: 96,       // Needs next 2 bytes
+    SHR_NUMBER_WITH_REG: 97         // Needs next 2 bytes
 }
